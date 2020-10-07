@@ -22,8 +22,8 @@ Since im really smart, no parser is built in, SO:
 
 ------------
 - Save both **parsed** replays in the same directory with **cpp-ctb-replays.exe** with the names, "catchthing1.txt" and "catchthing2.txt"
-
 <br>
+
 - **Done!**
 
 Compile **main.cpp** in **Visual Studio 2019** ***OR*** Launch **cpp-ctb-replays.exe** if using a release and be happy! (no)
