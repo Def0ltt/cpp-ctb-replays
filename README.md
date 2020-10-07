@@ -3,6 +3,7 @@
 
 SFML is already in the project so its technically ready to use.
 
+------------
 **How to parse replays:**
 
 Since im really smart, no parser is built in, SO:
