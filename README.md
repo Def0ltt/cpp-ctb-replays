@@ -10,10 +10,16 @@ Since im really smart, no parser is built in, SO:
 
 - Replace symbols "|" and "," with a line skip (http://www.unit-conversion.info/texttools/add-line-breaks/ this one works)
 
+
 **IF COMPILING SOURCE** 
+
+------------
 - Save both **parsed** replays in the same directory with **main.cpp** with the names, "catchthing1.txt" and "catchthing2.txt"
 
+
 **IF USING THE RELEASE** 
+
+------------
 - Save both **parsed** replays in the same directory with **cpp-ctb-replays.exe** with the names, "catchthing1.txt" and "catchthing2.txt"
 
 - **Done!**
