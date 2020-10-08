@@ -10,19 +10,8 @@ Since im really smart, no parser is built in, SO:
 - Get raw replay data with any parser (https://github.com/Swan/osuReplayParser this one works)
 
 - Replace symbols "|" and "," with a line skip (http://www.unit-conversion.info/texttools/add-line-breaks/ this one works)
-<br>
 
-**IF COMPILING SOURCE** 
-
-------------
-- Save both **parsed** replays in the same directory with **main.cpp** with the names, "catchthing1.txt" and "catchthing2.txt"
-<br>
-
-**IF USING THE RELEASE** 
-
-------------
-- Save both **parsed** replays in the same directory with **cpp-ctb-replays.exe** with the names, "catchthing1.txt" and "catchthing2.txt"
-<br>
+- Save both **parsed** replays in **catchthings/info** with the names, "catchthing1.txt" , "catchthing2.txt" and "catchthing3.txt"
 
 - **Done!**
 
