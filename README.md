@@ -16,4 +16,4 @@ SFML is already in the project so its technically ready to use.
 
 Compile **main.cpp** in **Visual Studio 2019** and be happy! (no)
 
-***Note:*** *You can also use the release, but it only supports 3 players and has no parser or documentation. I won't be upload the 50 players version with a parser, because its stupid and most likely be broken if I try to.
+***Note:*** *You can also use the release, but it only supports 3 players and has no parser or documentation. I won't be upload the 50 players version with a parser, because its stupid and most likely be broken if I try to.*
