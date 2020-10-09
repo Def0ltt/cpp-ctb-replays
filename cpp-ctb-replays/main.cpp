@@ -6,78 +6,124 @@
 #include <SFML/System.hpp>
 #include <SFML/Window.hpp>
 #include <SFML/Audio.hpp>
+#include <SFML/Graphics/BlendMode.hpp>
+#include <SFML/Graphics/Glsl.hpp>
 #include <windows.h>
+#include <string>
+
 
 using namespace std;
+
+// hue: 0-360°; sat: 0.f-1.f; val: 0.f-1.f
+sf::Color hsv(int hue, float sat, float val)
+{
+	hue %= 360;
+	while (hue < 0) hue += 360;
+
+	if (sat < 0.f) sat = 0.f;
+	if (sat > 1.f) sat = 1.f;
+
+	if (val < 0.f) val = 0.f;
+	if (val > 1.f) val = 1.f;
+
+	int h = hue / 60;
+	float f = float(hue) / 60 - h;
+	float p = val * (1.f - sat);
+	float q = val * (1.f - sat * f);
+	float t = val * (1.f - sat * (1 - f));
+
+	switch (h)
+	{
+	default:
+	case 0:
+	case 6: return sf::Color(val * 255, t * 255, p * 255);
+	case 1: return sf::Color(q * 255, val * 255, p * 255);
+	case 2: return sf::Color(p * 255, val * 255, t * 255);
+	case 3: return sf::Color(p * 255, q * 255, val * 255);
+	case 4: return sf::Color(t * 255, p * 255, val * 255);
+	case 5: return sf::Color(val * 255, p * 255, q * 255);
+	}
+}
 
 //Variables
 bool rubbish;
 
-float x = 0.0f;
-float y = 0.0f;
-float x2 = 0.0f;
-float y2 = 0.0f;
-float x3 = 0.0f;
-float y3 = 0.0f;
+float x[50] = { 0.0f };
+float y[50] = { 772.0f };
 
-float word;
-float word2;
-float word3;
+float word[50];
 
-float sleeptime1 = 0.0f;
-float sleeptime2 = 0.0f;
-float sleeptime3 = 0.0f;
+float sleeptime[50] = { 0.0f };
 
+int counter4 = 0;
+int counter5 = 0;
+int counter6 = 0;
+int counter7 = 0;
+string parsercode;
 
 //Creating A Window
 sf::RenderWindow window(sf::VideoMode(1536, 900), "CTB KNOCKOUTS POG", sf::Style::Titlebar | sf::Style::Close);
 
 //Creating "Catch Things/Textures"
-sf::RectangleShape player(sf::Vector2f(128.0f, 128.0f));
-sf::RectangleShape player2(sf::Vector2f(128.0f, 128.0f));
-sf::RectangleShape player3(sf::Vector2f(128.0f, 128.0f));
-sf::Texture player1Texture;
-sf::Texture player2Texture;
-sf::Texture player3Texture;
-
+sf::Texture playerTexture;
+std::vector<sf::RectangleShape> player(50);
 
 int main()
 {
-	ifstream players_file("players.json", std::ifstream::binary);
-	Json::Value players;
-	players_file >> players;
+	ifstream settings_file("settings.json", std::ifstream::binary);
+	Json::Value settings;
+	settings_file >> settings;
+	
+	int playerAmount = (settings["Settings"]["playerAmount"]).asInt();
+	const int playerss = playerAmount;
+
+	if (settings["Settings"]["parseReplays"] == true) {
+		while (counter7 <= (playerAmount - 1)) {
+			ofstream ParserFile("rawrpdata/parser.js");
+			parsercode = "const osuReplayParser = require('osureplayparser'); const utils = require('./node_modules/osureplayparser/utils/utils.js'); const replayPath = 'C:/Users/Danila/source/repos/cpp-ctb-replays/cpp-ctb-replays/rawrpdata/replays/";
+			parsercode += to_string(counter7);
+			parsercode += ".osr'; const replay = osuReplayParser.parseReplay(replayPath); var replayDonee = replay.replace(/\\|/g, '\\n'); var replayDoneee = replayDonee.replace(/,/g, '\\n'); var fs = require('fs'); fs.writeFileSync('catchthings/info/catchthing";
+			parsercode += to_string(counter7);
+			parsercode += ".txt', replayDoneee);";
+			ParserFile << parsercode;
+			ParserFile.close();
+			system("node rawrpdata/parser.js");
+			counter7 = counter7 + 1;
+			cout << "Parsed " << counter7 << "! \n";
+		}
+	}
 
 	//Setting FPS limit to 10000 cuzynot
-	window.setFramerateLimit(10000);
+	window.setFramerateLimit((settings["Settings"]["fpsLimit"]).asInt());
 
 	//Coloring/Texturing CatchThings
-	player.setFillColor(sf::Color::White);
-	player2.setFillColor(sf::Color::White);
-	player3.setFillColor(sf::Color::White);
-	player1Texture.loadFromFile("catchthings/textures/redguy.png");
-	player2Texture.loadFromFile("catchthings/textures/yellowguy.png");
-	player3Texture.loadFromFile("catchthings/textures/blueguy.png");
-	player.setTexture(&player1Texture);
-	player2.setTexture(&player2Texture);
-	player3.setTexture(&player3Texture);
+	playerTexture.loadFromFile("catchthings/textures/defaultguy.png");
+
+	int counter = 0;
+	int counter2 = 0;
+	while (counter <= (playerAmount - 1)) {
+		player[counter].setTexture(&playerTexture);
+		player[counter].setFillColor(sf::Color(hsv(counter2, 100, 100)));
+		player[counter].setSize(sf::Vector2f(128.0f,128.0f));
+		counter = counter + 1;
+		counter2 = counter2 + 5;
+	}
 
 	//Reading text files with info
-	fstream filered;
-	filered.open("catchthings/info/catchthing1.txt");
-
-	fstream filered2;
-	filered2.open("catchthings/info/catchthing2.txt");
-
-	fstream filered3;
-	filered3.open("catchthings/info/catchthing3.txt");
+	fstream filered[50];
+	int counter3 = 0;
+	string updaterthing;
+	while (counter3 <= (playerAmount - 1)) {
+		updaterthing = "catchthings/info/catchthing"; updaterthing += to_string(counter3); updaterthing += ".txt";
+		filered[counter3].open(updaterthing);
+		counter3 = counter3 + 1;
+	}
 
 	//Creating Exit Event
 	sf::Event ev;
 
 	//Creating Clocks
-	sf::Clock clockc1;
-	sf::Clock clockc2;
-	sf::Clock clockc3;
+	sf::Clock clockc[50];
 
 	cout << "Everything is ready, start? (type anything to proceed):";
 	cin >> rubbish;
@@ -101,60 +147,33 @@ int main()
 			}
 		}
 
-		//Catch Thing 1 - Position Finder
-		sf::Time elapsedc1 = clockc1.getElapsedTime();
+		//Catch Thing - Position Finder
+		while (counter4 <= (playerAmount - 1)) {
+			sf::Time elapsed = clockc[counter4].getElapsedTime();
 
-		if (elapsedc1.asMilliseconds() >= sleeptime1) {
-			filered >> word;
-			sleeptime1 = word;
-			filered >> word;
-			x = (word + 128) * 2;
-			y = 772;
-			filered >> word;
-			filered >> word;
-			player.setPosition(x, y);
-			clockc1.restart();
+			if (elapsed.asMilliseconds() >= sleeptime[counter4]) {
+				filered[counter4] >> word[counter4];
+				sleeptime[counter4] = word[counter4];
+				filered[counter4] >> word[counter4];
+				x[counter4] = (word[counter4] + 128) * 2;
+				filered[counter4] >> word[counter4];
+				filered[counter4] >> word[counter4];
+				y[counter4] = 772.0f;
+				player[counter4].setPosition(x[counter4], y[counter4]);
+				clockc[counter4].restart();
+			}
+			counter4 = counter4 + 1;
 		}
-
-		//Catch Thing 2 - Position Finder
-		sf::Time elapsedc2 = clockc2.getElapsedTime();
-
-		if (elapsedc2.asMilliseconds() >= sleeptime2)
-		{
-			filered2 >> word2;
-			sleeptime2 = word2;
-			filered2 >> word2;
-			x2 = (word2 + 128) * 2;
-			y2 = 772;
-			filered2 >> word2;
-			filered2 >> word2;
-			player2.setPosition(x2, y2);
-			clockc2.restart();
-		}
-
-		//Catch Thing 3 - Position Finder
-		sf::Time elapsedc3 = clockc3.getElapsedTime();
-
-		if (elapsedc3.asMilliseconds() >= sleeptime3)
-		{
-			filered3 >> word3;
-			sleeptime3 = word3;
-			filered3 >> word3;
-			x3 = (word3 + 128) * 2;
-			y3 = 772;
-			filered3 >> word3;
-			filered3 >> word3;
-			player3.setPosition(x3, y3);
-			clockc3.restart();
-		}
+		counter4 = 0;
 
 		//Render
 		window.clear();
-		if (players["Players"]["player1red"] == true) window.draw(player);
-		if (players["Players"]["player2yellow"] == true) window.draw(player2);
-		if (players["Players"]["player3blue"] == true) window.draw(player3);
+		while (counter5 <= (playerAmount - 1)) {
+			window.draw(player[counter5], sf::BlendAdd);
+			counter5 = counter5 + 1;
+		}
+		counter5 = 0;
 		window.display(); //Display drawn stuff
-
 	}
 
 	return 0;

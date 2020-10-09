@@ -1,2 +1,4 @@
-﻿  main.cpp
-  cpp-ctb-replays.vcxproj -> C:\Users\Danila\source\repos\cpp-ctb-replays\Debug\cpp-ctb-replays.exe
+﻿  jsoncpp.cpp
+  main.cpp
+C:\Users\Danila\source\repos\cpp-ctb-replays\cpp-ctb-replays\main.cpp(1,10): fatal error C1083: Не удается открыть файл включение: json/json.h: No such file or directory,
+  Создание кода...
