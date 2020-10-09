@@ -8,7 +8,7 @@ SFML is already in the project so its technically ready to use.
 **Smol use instuctions:**
 
 - Set the player count in **settings.json**
-- Put the amount of replays set in **settings.json** into **cpp-ctb-replays\cpp-ctb-replays\rawrpdata\replays\**
+- Put the amount of replays set in **settings.json** into **cpp-ctb-replays/cpp-ctb-replays/rawrpdata/replay/**
 - Name the replays with numbers (From 0.osr to **((PLAYER NUMBER SET IN SETTINGS.JSON) - 1).osr**)
 - Set **parseReplays** to **true** if running the replays for the first time
 
