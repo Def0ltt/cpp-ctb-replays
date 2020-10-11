@@ -1,0 +1,7 @@
+{
+"Settings" : { 
+      "playerAmount": 50,
+      "fpsLimit": 10000,
+	  "parseReplays": false
+	  }
+}
