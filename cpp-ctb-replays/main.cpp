@@ -59,7 +59,13 @@ int counter4 = 0;
 int counter5 = 0;
 int counter6 = 0;
 int counter7 = 0;
+int namesCounter = 0;
+int namesPos = 0;
+
+int fontSize;
+
 string parsercode;
+string playerName[50];
 
 //Creating A Window
 sf::RenderWindow window(sf::VideoMode(1536, 900), "CTB KNOCKOUTS POG", sf::Style::Titlebar | sf::Style::Close);
@@ -67,6 +73,9 @@ sf::RenderWindow window(sf::VideoMode(1536, 900), "CTB KNOCKOUTS POG", sf::Style
 //Creating "Catch Things/Textures"
 sf::Texture playerTexture;
 std::vector<sf::RectangleShape> player(50);
+
+sf::Font font;
+sf::Text playerNames[50];
 
 int main()
 {
@@ -89,9 +98,10 @@ int main()
 			ParserFile.close();
 			system("node rawrpdata/parser.js");
 			counter7 = counter7 + 1;
-			cout << "Parsed " << counter7 << "! \n";
+			cout << "Replay " << counter7 << " Parsed! \n";
 		}
 	}
+	cout << "All replays parsed. " << endl << playerAmount << " replays parsed!" << endl;
 
 	//Setting FPS limit to 10000 cuzynot
 	window.setFramerateLimit((settings["Settings"]["fpsLimit"]).asInt());
@@ -101,13 +111,16 @@ int main()
 
 	int counter = 0;
 	int counter2 = 0;
+	int colorz = 360 / playerAmount;
 	while (counter <= (playerAmount - 1)) {
 		player[counter].setTexture(&playerTexture);
 		player[counter].setFillColor(sf::Color(hsv(counter2, 100, 100)));
 		player[counter].setSize(sf::Vector2f(128.0f,128.0f));
+		playerNames[counter].setFillColor(sf::Color(hsv(counter2, 100, 100)));
 		counter = counter + 1;
-		counter2 = counter2 + 5;
+		counter2 = counter2 + colorz;
 	}
+	cout << "Player models created." << endl;
 
 	//Reading text files with info
 	fstream filered[50];
@@ -116,8 +129,12 @@ int main()
 	while (counter3 <= (playerAmount - 1)) {
 		updaterthing = "catchthings/info/catchthing"; updaterthing += to_string(counter3); updaterthing += ".txt";
 		filered[counter3].open(updaterthing);
+		filered[counter3] >> playerName[counter3];
+		playerNames[counter3].setString(playerName[counter3]);
+		cout << playerName[counter3] << "'s replays opened. Total[" << counter3+1 << "]" << endl;
 		counter3 = counter3 + 1;
 	}
+	cout << "Parsed files opened." << endl;
 
 	//Creating Exit Event
 	sf::Event ev;
@@ -125,8 +142,22 @@ int main()
 	//Creating Clocks
 	sf::Clock clockc[50];
 
-	cout << "Everything is ready, start? (type anything to proceed):";
-	cin >> rubbish;
+	fontSize = 900 / playerAmount;
+	font.loadFromFile("fonts/impact.ttf");
+	namesPos = fontSize;
+	if (fontSize >= 70) {
+		fontSize = 70;
+	}
+
+	while (namesCounter <= (playerAmount - 1)) {
+		playerNames[namesCounter].setCharacterSize(fontSize);
+		playerNames[namesCounter].setPosition(sf::Vector2f(0.0f, namesPos));
+		playerNames[namesCounter].setFont(font);
+		namesPos = namesPos + fontSize;
+		namesCounter = namesCounter + 1;
+	}
+
+	cout << "Everything is ready, starting!";
 
 	//Main Loop
 	while (window.isOpen())
@@ -169,6 +200,7 @@ int main()
 		//Render
 		window.clear();
 		while (counter5 <= (playerAmount - 1)) {
+			window.draw(playerNames[counter5]);
 			window.draw(player[counter5], sf::BlendAdd);
 			counter5 = counter5 + 1;
 		}
