@@ -5,14 +5,15 @@ SFML is already in the project so its technically ready to use.
 
 <br>
 
-**How to parse replays:**
-Since im really smart, no parser is built in, SO:
-- Get raw replay data with any parser (https://github.com/Swan/osuReplayParser this one works)
+**Smol use instuctions:**
 
-- Replace symbols "|" and "," with a line skip (http://www.unit-conversion.info/texttools/add-line-breaks/ this one works)
-
-- Save both **parsed** replays in **catchthings/info** with the names, "catchthing1.txt" , "catchthing2.txt" and "catchthing3.txt"
+- Set the player count in **settings.json**
+- Put the amount of replays set in **settings.json** into **cpp-ctb-replays/cpp-ctb-replays/rawrpdata/replay/**
+- Name the replays with numbers (From 0.osr to **((PLAYER NUMBER SET IN SETTINGS.JSON) - 1).osr**)
+- Set **parseReplays** to **true** if running the replays for the first time
 
 - **Done!**
 
-Compile **main.cpp** in **Visual Studio 2019** ***OR*** Launch **cpp-ctb-replays.exe** if using a release and be happy! (no)
+Compile **main.cpp** in **Visual Studio 2019** and be happy! (no)
+
+***Note:*** *You can also use the release, but it only supports 3 players and has no parser or documentation. I won't be uploading the 50 players version with a parser, because its stupid and will most likely be broken if I try to.*
