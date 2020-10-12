@@ -49,6 +49,7 @@ sf::Color hsv(int hue, float sat, float val)
 bool rubbish;
 
 float x[50] = { 0.0f };
+float lastx[50] = { 0.0f };
 float y[50] = { 772.0f };
 
 float word[50];
@@ -61,11 +62,16 @@ int counter6 = 0;
 int counter7 = 0;
 int namesCounter = 0;
 int namesPos = 0;
+int actualNamePos = 0;
+
+int button1Active[50] = { 0 };
+int button2Active[50] = { 0 };
 
 int fontSize;
 
 string parsercode;
 string playerName[50];
+string playerMod[50];
 
 //Creating A Window
 sf::RenderWindow window(sf::VideoMode(1536, 900), "CTB KNOCKOUTS POG", sf::Style::Titlebar | sf::Style::Close);
@@ -73,6 +79,8 @@ sf::RenderWindow window(sf::VideoMode(1536, 900), "CTB KNOCKOUTS POG", sf::Style
 //Creating "Catch Things/Textures"
 sf::Texture playerTexture;
 std::vector<sf::RectangleShape> player(50);
+std::vector<sf::RectangleShape> playerButton1(50);
+std::vector<sf::RectangleShape> playerButton2(50);
 
 sf::Font font;
 sf::Text playerNames[50];
@@ -82,8 +90,10 @@ int main()
 	ifstream settings_file("settings.json", std::ifstream::binary);
 	Json::Value settings;
 	settings_file >> settings;
-	
+
 	int playerAmount = (settings["Settings"]["playerAmount"]).asInt();
+	fontSize = 900 / playerAmount;
+
 	const int playerss = playerAmount;
 
 	if (settings["Settings"]["parseReplays"] == true) {
@@ -123,13 +133,29 @@ int main()
 	cout << "Player models created." << endl;
 
 	//Reading text files with info
-	fstream filered[50];
+	int modFound[50] = { 0 };
+	ifstream modfile[50];
+
+	string modName[50];
+	string modNumber[50];
+
+	ifstream filered[50];
 	int counter3 = 0;
 	string updaterthing;
 	while (counter3 <= (playerAmount - 1)) {
+		modfile[counter3].open("catchthings/modinfo.txt");
 		updaterthing = "catchthings/info/catchthing"; updaterthing += to_string(counter3); updaterthing += ".txt";
 		filered[counter3].open(updaterthing);
-		filered[counter3] >> playerName[counter3];
+		getline(filered[counter3], playerName[counter3]);
+		getline(filered[counter3], playerMod[counter3]);
+		if (playerMod[counter3] == "0") { modFound[counter3] = 1; modName[counter3] = "NM"; }
+		while (modFound[counter3] == 0) {
+			modfile[counter3] >> modName[counter3];
+			modfile[counter3] >> modNumber[counter3];
+			if (modNumber[counter3] == playerMod[counter3]) { modFound[counter3] = 1; }
+		}
+		playerName[counter3] += " +";
+		playerName[counter3] += modName[counter3];
 		playerNames[counter3].setString(playerName[counter3]);
 		cout << playerName[counter3] << "'s replays opened. Total[" << counter3+1 << "]" << endl;
 		counter3 = counter3 + 1;
@@ -142,18 +168,27 @@ int main()
 	//Creating Clocks
 	sf::Clock clockc[50];
 
-	fontSize = 900 / playerAmount;
-	font.loadFromFile("fonts/impact.ttf");
+	font.loadFromFile("fonts/Exo2-Light.ttf");
 	namesPos = fontSize;
 	if (fontSize >= 70) {
 		fontSize = 70;
 	}
 
+	counter2 = 0;
+
 	while (namesCounter <= (playerAmount - 1)) {
 		playerNames[namesCounter].setCharacterSize(fontSize);
-		playerNames[namesCounter].setPosition(sf::Vector2f(0.0f, namesPos));
+		playerNames[namesCounter].setPosition(sf::Vector2f((fontSize*2)+3+3, actualNamePos));
+		playerButton1[namesCounter].setFillColor(sf::Color(hsv(counter2, 100, 100)));
+		playerButton1[namesCounter].setSize(sf::Vector2f(fontSize, fontSize));
+		playerButton1[namesCounter].setPosition(sf::Vector2f(0, actualNamePos));
+		playerButton2[namesCounter].setFillColor(sf::Color(hsv(counter2, 100, 100)));
+		playerButton2[namesCounter].setSize(sf::Vector2f(fontSize, fontSize));
+		playerButton2[namesCounter].setPosition(sf::Vector2f(fontSize+3, actualNamePos));
 		playerNames[namesCounter].setFont(font);
+		actualNamePos = namesPos;
 		namesPos = namesPos + fontSize;
+		counter2 = counter2 + colorz;
 		namesCounter = namesCounter + 1;
 	}
 
@@ -186,7 +221,11 @@ int main()
 				filered[counter4] >> word[counter4];
 				sleeptime[counter4] = word[counter4];
 				filered[counter4] >> word[counter4];
+				lastx[counter4] = x[counter4];
 				x[counter4] = (word[counter4] + 128) * 2;
+				if (x[counter4] > lastx[counter4]) { button2Active[counter4] = 1; button1Active[counter4] = 0; }
+				if (x[counter4] < lastx[counter4]) { button1Active[counter4] = 1; button2Active[counter4] = 0; }
+				if (x[counter4] == lastx[counter4]) { button1Active[counter4] = 0; button2Active[counter4] = 0; }
 				filered[counter4] >> word[counter4];
 				filered[counter4] >> word[counter4];
 				y[counter4] = 772.0f;
@@ -202,6 +241,8 @@ int main()
 		while (counter5 <= (playerAmount - 1)) {
 			window.draw(playerNames[counter5]);
 			window.draw(player[counter5], sf::BlendAdd);
+			if (button1Active[counter5] == 1) { window.draw(playerButton1[counter5]); }
+			if (button2Active[counter5] == 1) { window.draw(playerButton2[counter5]); }
 			counter5 = counter5 + 1;
 		}
 		counter5 = 0;
