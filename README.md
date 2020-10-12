@@ -3,7 +3,8 @@
 
 SFML is already in the project so its technically ready to use.
 
-<br>
+**Example picture from the program:**
+[![Example](https://imgur.com/KaLFLoC.png "Example")](https://imgur.com/KaLFLoC.png "Example")
 
 **Smol use instuctions:**
 
